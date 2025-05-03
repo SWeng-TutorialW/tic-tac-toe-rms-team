@@ -20,15 +20,15 @@ import org.greenrobot.eventbus.Subscribe;
 public class App extends Application {
 
     private static Scene scene;
-    private SimpleClient client;
 
     @Override
     public void start(Stage stage) throws IOException {
-    	EventBus.getDefault().register(this);
-    	client = SimpleClient.getClient();
-    	client.openConnection();
+        // Do NOT open connection here — wait for user input
+        EventBus.getDefault().register(this);
+
         scene = new Scene(loadFXML("secondary"), 300, 180);
         stage.setScene(scene);
+        stage.setTitle("Tic Tac Toe - Client");
         stage.show();
     }
 
@@ -40,33 +40,30 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-    
-    
 
     @Override
-	public void stop() throws Exception {
-		// TODO Auto-generated method stub
-    	EventBus.getDefault().unregister(this);
-        client.sendToServer("remove client");
-        client.closeConnection();
-		super.stop();
-	}
-    
+    public void stop() throws Exception {
+        EventBus.getDefault().unregister(this);
+        try {
+            SimpleClient.getClient().sendToServer("remove client");
+            SimpleClient.getClient().closeConnection();
+        } catch (Exception ignored) {}  // May not be connected
+        super.stop();
+    }
+
     @Subscribe
     public void onWarningEvent(WarningEvent event) {
-    	Platform.runLater(() -> {
-    		Alert alert = new Alert(AlertType.WARNING,
-        			String.format("Message: %s\nTimestamp: %s\n",
-        					event.getWarning().getMessage(),
-        					event.getWarning().getTime().toString())
-        	);
-        	alert.show();
-    	});
-    	
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    String.format("Message: %s\nTimestamp: %s\n",
+                            event.getWarning().getMessage(),
+                            event.getWarning().getTime().toString())
+            );
+            alert.show();
+        });
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         launch();
     }
-
 }

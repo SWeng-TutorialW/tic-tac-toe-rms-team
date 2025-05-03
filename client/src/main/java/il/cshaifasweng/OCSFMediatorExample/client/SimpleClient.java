@@ -16,7 +16,9 @@ public class SimpleClient extends AbstractClient {
 	public static void overrideConfig(String host, int port) {
 		customHost = host;
 		customPort = port;
+		client = new SimpleClient(customHost, customPort); // <-- move this here!
 	}
+
 
 	private SimpleClient(String host, int port) {
 		super(host, port);
@@ -24,10 +26,11 @@ public class SimpleClient extends AbstractClient {
 
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient(customHost, customPort);
+			throw new IllegalStateException("Call overrideConfig before getClient()");
 		}
 		return client;
 	}
+
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
