@@ -47,7 +47,7 @@ public class SimpleServer extends AbstractServer {
 				}
 
 				if (playerX != null && playerO != null) {
-					// Randomize who is X and who starts
+					//Randomize who is X and who starts
 					if (playerX != null && playerO != null) {
 
 						boolean playerXGetsX = Math.random() < 0.5;

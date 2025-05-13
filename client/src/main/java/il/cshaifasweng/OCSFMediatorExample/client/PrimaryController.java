@@ -57,7 +57,6 @@ public class PrimaryController {
 		button.setText(mySymbol);
 		button.setDisable(true);
 		isMyTurn = false;
-
 		try {
 			SimpleClient.getClient().sendToServer("move:" + row + ":" + col + ":" + mySymbol);
 		} catch (IOException e) {
